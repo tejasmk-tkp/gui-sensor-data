@@ -1,73 +1,22 @@
 from nicegui import ui
-import plotly.graph_objects as go
-from random import random
 
-ui.label('Sensor Data')
-ui.dark_mode().enable()
+def gui_view(sensor, sensor_values, step_values):
+    with ui.card().tight():
+        fig = go.Figure(go.Scatter(x=[step], y=[value]))
+        fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
+        ui.plotly(fig).classes('w-100 h-100')
+        with ui.card_section():
+            ui.label(f'{sensor}: {value}')
 
-value = [random(), random(), random(), random(), random(), random()]
+def update_gui(sensor, value):
+    step = 0
+    while True:
+        sensor_values.append(value)
+        step_values.append(step)
 
-with ui.splitter() as splitter:
-    with splitter.before:
-        with ui.card().tight():
-            fig = go.Figure(go.Scatter(x=[1, 2, 3, 4], y=[1, 2, 3, 4]))
-            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
-            ui.plotly(fig).classes('w-100 h-100')
-            with ui.card_section():
-                ui.label(f'MQ136: {value[0]}')
-            '''def add_trace():
-            fig.add_trace(go.Scatter(x=[1, 2, 3, 4], y=[random(), random(), random(), random()]))
-            plot.update()'''
-    with splitter.after:
-        with ui.card().tight():
-            fig = go.Figure(go.Scatter(x = [1, 2, 3, 4], y = [1, 2, 3, 2.5]))
-            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
-            ui.plotly(fig).classes('w-100 h-100')
-            with ui.card_section():
-                ui.label(f'MQ2: {value[1]}')
-    with splitter.separator:
-        ui.icon('line').classes('w-100')
+        gui_view(sensor, sensor_values, step_values)
 
-with ui.splitter() as splitter:
-    with splitter.before:
-        with ui.card().tight():
-            fig = go.Figure(go.Scatter(x=[1, 2, 3, 4], y=[1, 2, 3, 4]))
-            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
-            ui.plotly(fig).classes('w-100 h-100')
-            with ui.card_section():
-                ui.label(f'DHT11 (temperature): {value[2]}')
-            '''def add_trace():
-            fig.add_trace(go.Scatter(x=[1, 2, 3, 4], y=[random(), random(), random(), random()]))
-            plot.update()'''
-    with splitter.after:
-        with ui.card().tight():
-            fig = go.Figure(go.Scatter(x = [1, 2, 3, 4], y = [1, 2, 3, 2.5]))
-            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
-            ui.plotly(fig).classes('w-100 h-100')
-            with ui.card_section():
-                ui.label(f'DHT11 (humidity): {value[3]}')
-    with splitter.separator:
-        ui.icon('line').classes('w-100')
+        step += 1
 
-with ui.splitter() as splitter:
-    with splitter.before:
-        with ui.card().tight():
-            fig = go.Figure(go.Scatter(x=[1, 2, 3, 4], y=[1, 2, 3, 4]))
-            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
-            ui.plotly(fig).classes('w-100 h-100')
-            with ui.card_section():
-                ui.label(f'MQ137: {value[4]}')
-            '''def add_trace():
-            fig.add_trace(go.Scatter(x=[1, 2, 3, 4], y=[random(), random(), random(), random()]))
-            plot.update()'''
-    with splitter.after:
-        with ui.card().tight():
-            fig = go.Figure(go.Scatter(x = [1, 2, 3, 4], y = [1, 2, 3, 2.5]))
-            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
-            ui.plotly(fig).classes('w-100 h-100')
-            with ui.card_section():
-                ui.label(f'MQ7: {value[5]}')
-    with splitter.separator:
-        ui.icon('line').classes('w-100')
+        time.sleep(0.02)
 
-ui.run()
