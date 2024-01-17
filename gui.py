@@ -1,62 +1,73 @@
 from nicegui import ui
-import sys
-import socket
-import json
-import asyncio
+import plotly.graph_objects as go
+from random import random
 
 ui.label('Sensor Data')
+ui.dark_mode().enable()
 
-columns = [{'name': 'Sensor', 'label': 'Sensor', 'field': 'Sensor', 'required': True, 'align': 'left'},
-        {'name': 'Value', 'label': 'Value', 'field': 'Value', 'sortable': False},
-        ]
+value = [random(), random(), random(), random(), random(), random()]
 
-rows = [{'Sensor': 'MQ136', 'Value': ' '},
-        {'Sensor': 'MQ2', 'Value': ' '},
-        {'Sensor': 'DHT11', 'Value': ' '},
-        {'Sensor': 'A extra1', 'Value': ' '},
-        {'Sensor': 'A extra2', 'Value': ' '},
-        {'Sensor': 'MQ137', 'Value': ' '},
-        {'Sensor': 'MQ7', 'Value': ' '},
-        ]
+with ui.splitter() as splitter:
+    with splitter.before:
+        with ui.card().tight():
+            fig = go.Figure(go.Scatter(x=[1, 2, 3, 4], y=[1, 2, 3, 4]))
+            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
+            ui.plotly(fig).classes('w-100 h-100')
+            with ui.card_section():
+                ui.label(f'MQ136: {value[0]}')
+            '''def add_trace():
+            fig.add_trace(go.Scatter(x=[1, 2, 3, 4], y=[random(), random(), random(), random()]))
+            plot.update()'''
+    with splitter.after:
+        with ui.card().tight():
+            fig = go.Figure(go.Scatter(x = [1, 2, 3, 4], y = [1, 2, 3, 2.5]))
+            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
+            ui.plotly(fig).classes('w-100 h-100')
+            with ui.card_section():
+                ui.label(f'MQ2: {value[1]}')
+    with splitter.separator:
+        ui.icon('line').classes('w-100')
 
-table = ui.table(columns=columns, rows=rows, row_key='name')
+with ui.splitter() as splitter:
+    with splitter.before:
+        with ui.card().tight():
+            fig = go.Figure(go.Scatter(x=[1, 2, 3, 4], y=[1, 2, 3, 4]))
+            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
+            ui.plotly(fig).classes('w-100 h-100')
+            with ui.card_section():
+                ui.label(f'DHT11 (temperature): {value[2]}')
+            '''def add_trace():
+            fig.add_trace(go.Scatter(x=[1, 2, 3, 4], y=[random(), random(), random(), random()]))
+            plot.update()'''
+    with splitter.after:
+        with ui.card().tight():
+            fig = go.Figure(go.Scatter(x = [1, 2, 3, 4], y = [1, 2, 3, 2.5]))
+            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
+            ui.plotly(fig).classes('w-100 h-100')
+            with ui.card_section():
+                ui.label(f'DHT11 (humidity): {value[3]}')
+    with splitter.separator:
+        ui.icon('line').classes('w-100')
 
-def update_table(data):
-    for row in rows:
-        sensor_name = row['Sensor']
-        if sensor_name in data:
-            row['Value'] = data[sensor_name]
-
-    table.refresh()
-
-async def socket_server():
-    host, port = '127.0.0.1', 8888
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((host, port))
-    server_socket.listen()
-
-    print(f"Server listening on {host}:{port}")
-
-    while True:
-        conn, addr = await loop.sock_accept(server_socket)
-        loop.create_task(handle_connection(conn, addr))
-
-async def handle_connection(conn, addr):
-    print(f"Connected by {addr}")
-
-    data = await loop.sock_recv(conn, 1024)
-    if not data:
-        conn.close()
-        return
-
-    sensor_data = json.loads(data.decode('utf-8'))
-
-    await update_table(sensor_data)
-
-    conn.close()
-
-loop = asyncio.get_event_loop()
-
-loop.create_task(socket_server())
+with ui.splitter() as splitter:
+    with splitter.before:
+        with ui.card().tight():
+            fig = go.Figure(go.Scatter(x=[1, 2, 3, 4], y=[1, 2, 3, 4]))
+            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
+            ui.plotly(fig).classes('w-100 h-100')
+            with ui.card_section():
+                ui.label(f'MQ137: {value[4]}')
+            '''def add_trace():
+            fig.add_trace(go.Scatter(x=[1, 2, 3, 4], y=[random(), random(), random(), random()]))
+            plot.update()'''
+    with splitter.after:
+        with ui.card().tight():
+            fig = go.Figure(go.Scatter(x = [1, 2, 3, 4], y = [1, 2, 3, 2.5]))
+            fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
+            ui.plotly(fig).classes('w-100 h-100')
+            with ui.card_section():
+                ui.label(f'MQ7: {value[5]}')
+    with splitter.separator:
+        ui.icon('line').classes('w-100')
 
 ui.run()
